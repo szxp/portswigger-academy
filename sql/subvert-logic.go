@@ -20,15 +20,13 @@ func main() {
 }
 
 func solve() error {
-	jar, err := cookiejar.New(nil)
+	client, err := newClient()
 	if err != nil {
 		return err
 	}
 
-	client := &http.Client{Jar: jar}
-
-	u := "https://0a33001503fd6bedc03017d1000c000f.web-security-academy.net/login"
-	csrfToken, err := getCSRFToken(u, client)
+	u := "https://0ac7000a03ed47c6c03c171000f800a5.web-security-academy.net/login"
+	csrfToken, err := parseCSRFToken(u, client)
 	if err != nil {
 		return err
 	}
@@ -38,6 +36,9 @@ func solve() error {
 		return err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode / 100 != 2 {
+		return fmt.Errorf("Status: %v", resp.Status)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -47,15 +48,26 @@ func solve() error {
 	return err
 }
 
+func newClient() (*http.Client, error) {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return &http.Client{Jar: jar}, nil
+}
 
 var csrfRE *regexp.Regexp = regexp.MustCompile(`name="csrf" value="([^"]+)"`)
 
-func getCSRFToken(url string, client *http.Client) (string, error) {
+func parseCSRFToken(url string, client *http.Client) (string, error) {
 	resp, err := client.Get(url)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode / 100 != 2 {
+		return "", fmt.Errorf("Status: %v", resp.Status)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
