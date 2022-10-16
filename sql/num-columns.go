@@ -35,7 +35,7 @@ func solve() error {
 }
 
 func numColumns(u string, client *http.Client) (int, error) {
-	for i := 1; i < 20; i++ {
+	for i := 1; i <= 20; i++ {
 		nulls := make([]string, i)
 		for j := 0; j < len(nulls); j++ {
     			nulls[j] = "null"
