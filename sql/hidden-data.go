@@ -4,10 +4,10 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
-	"log"
-	"io"
 	"net/url"
 )
 
@@ -30,7 +30,7 @@ func solve() error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode / 100 != 2 {
+	if resp.StatusCode/100 != 2 {
 		return fmt.Errorf("Status: %v", resp.Status)
 	}
 
