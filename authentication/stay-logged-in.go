@@ -1,4 +1,4 @@
-// https://portswigger.net/web-security/authentication/multi-factor/lab-2fa-broken-logic
+// https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie
 
 package main
 
