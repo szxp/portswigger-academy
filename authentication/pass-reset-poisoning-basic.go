@@ -1,4 +1,4 @@
-// https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-reset-poisoning-via-middleware
+// https://portswigger.net/web-security/host-header/exploiting/password-reset-poisoning/lab-host-header-basic-password-reset-poisoning
 
 package main
 
